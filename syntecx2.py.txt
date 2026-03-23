@@ -1,0 +1,39 @@
+import requests
+from bs4 import BeautifulSoup
+
+def fetch_bbc_headlines():
+    url = "https://www.bbc.com/news"
+
+    headers = {
+        "User-Agent": "Mozilla/5.0"
+    }
+
+    try:
+        # Send request
+        response = requests.get(url, headers=headers, timeout=10)
+
+        # Check response
+        if response.status_code == 200:
+            # Parse HTML
+            soup = BeautifulSoup(response.content, "html.parser")
+
+            # Find all headlines
+            headlines = soup.find_all("h3")
+
+            print("\n--- BBC NEWS HEADLINES ---\n")
+
+            for headline in headlines:
+                text = headline.get_text(strip=True)
+                if text:
+                    print(text)
+
+        else:
+            print("Failed to fetch page. Status code:", response.status_code)
+
+    except requests.exceptions.RequestException as e:
+        print("Error:", e)
+
+
+# Run function
+if __name__ == "__main__":
+    fetch_bbc_headlines()
